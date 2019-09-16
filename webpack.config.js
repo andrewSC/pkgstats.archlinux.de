@@ -8,7 +8,6 @@ Encore
   .addEntry('js/swagger_ui', './assets/js/swagger_ui.js')
   .addEntry('js/package', './assets/js/package.js')
   .addStyleEntry('css/app', './assets/css/app.scss')
-  .addStyleEntry('css/swagger_ui', './assets/css/swagger_ui.scss')
   .copyFiles({
     from: 'assets/images',
     to: 'images/[path][name].[hash:8].[ext]'
@@ -25,7 +24,8 @@ Encore
   })
   .configureBabel(() => {}, {
     useBuiltIns: 'usage',
-    corejs: 3
+    corejs: 3,
+    include_node_modules: ['lit-element', 'lit-html']
   })
 
 if (Encore.isProduction()) {

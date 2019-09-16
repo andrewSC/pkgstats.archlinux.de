@@ -4871,6 +4871,18 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lit-element@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/lit-element/-/lit-element-2.2.1.tgz#79c94d8cfdc2d73b245656e37991bd1e4811d96f"
+  integrity sha512-ipDcgQ1EpW6Va2Z6dWm79jYdimVepO5GL0eYkZrFvdr0OD/1N260Q9DH+K5HXHFrRoC7dOg+ZpED2XE0TgGdXw==
+  dependencies:
+    lit-html "^1.0.0"
+
+lit-html@^1.0.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.1.2.tgz#2e3560a7075210243649c888ad738eaf0daa8374"
+  integrity sha512-FFlUMKHKi+qG1x1iHNZ1hrtc/zHmfYTyrSvs3/wBTvaNtpZjOZGWzU7efGYVpgp6KvWeKF6ql9/KsCq6Z/mEDA==
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -6959,6 +6971,11 @@ react-redux@^4.x.x:
     lodash "^4.17.11"
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
+
+react-shadow-dom-retarget-events@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/react-shadow-dom-retarget-events/-/react-shadow-dom-retarget-events-1.0.10.tgz#78c3c039bf2ea4e788d91d390662c9ccaf8d92ad"
+  integrity sha512-OOt7ugDgSuXiy+PmMOMHqvm4ko6X+cJsre/N124dCJhLBXqv1xVLjwuhpeY7/nv7p/YxytvyfwYG+M19NMnSjQ==
 
 react@^15.6.2:
   version "15.6.2"
