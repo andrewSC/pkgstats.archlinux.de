@@ -11,6 +11,6 @@ app_swagger_ui:
     methods: GET
     defaults:
         _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
-        template: 'index.html.twig'
+        template: 'index.html'
         sharedAge: 3600
         maxAge: 300

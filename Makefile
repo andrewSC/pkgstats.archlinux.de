@@ -7,7 +7,7 @@ COMPOSE=UID=${UID} GID=${GID} docker-compose -f docker/docker-compose.yml -p pkg
 COMPOSE-RUN=${COMPOSE} run --rm -u ${UID}:${GID}
 PHP-DB-RUN=${COMPOSE-RUN} php
 PHP-RUN=${COMPOSE-RUN} --no-deps php
-NODE-RUN=${COMPOSE-RUN} --no-deps encore
+NODE-RUN=${COMPOSE-RUN} --no-deps node
 MARIADB-RUN=${COMPOSE-RUN} --no-deps mariadb
 
 all: install
@@ -41,7 +41,7 @@ rebuild: clean
 
 install:
 	${PHP-RUN} composer --no-interaction install
-	${NODE-RUN} yarn install
+	${NODE-RUN} npm install
 
 shell-php:
 	${PHP-DB-RUN} bash
@@ -52,11 +52,11 @@ shell-node:
 test:
 	${PHP-RUN} composer validate
 	${PHP-RUN} vendor/bin/phpcs
-	${NODE-RUN} node_modules/.bin/standard 'assets/js/**/*.js' '*.js'
-	${NODE-RUN} node_modules/.bin/stylelint 'assets/css/**/*.scss' 'assets/css/**/*.css'
+	${NODE-RUN} npm run lint
+#	${NODE-RUN} npm run test:unit
+	${NODE-RUN} node_modules/.bin/stylelint 'assets/css/**/*.scss' 'assets/css/**/*.css' 'assets/js/**/*.vue'
 	${PHP-RUN} bin/console lint:yaml config
 	${PHP-RUN} bin/console lint:twig templates
-	${NODE-RUN} sh -c "PUBLIC_PATH=/tmp node_modules/.bin/encore prod"
 	${PHP-RUN} vendor/bin/phpstan analyse
 	${PHP-RUN} vendor/bin/phpunit
 
@@ -77,11 +77,11 @@ test-security:
 
 update:
 	${PHP-RUN} composer --no-interaction update
-	${NODE-RUN} yarn upgrade --latest
+	${NODE-RUN} npm audit fix
 
 deploy:
-	yarn install
-	yarn run encore prod
+	npm install
+	npm run build
 	find public/build -type f -mtime +30 -delete
 	find public/build -type d -empty -delete
 	composer --no-interaction install --prefer-dist --no-dev --optimize-autoloader
