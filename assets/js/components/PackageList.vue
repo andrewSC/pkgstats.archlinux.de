@@ -1,16 +1,12 @@
 <template>
   <div>
-    <div class="package-list-header">
-      The top {{ data.count }} of {{ data.total }} total packages
-      <div class="form-group">
-        <input class="form-control"
-               max="255" min="0" pattern="^[a-zA-Z0-9][a-zA-Z0-9@:.+_-]*$"
-               placeholder="Package name" type="text"
-               v-model="query"/>
-      </div>
-      <loading-spinner v-if="loading"></loading-spinner>
+    <div class="form-group">
+      <input class="form-control"
+             max="255" min="0" pattern="^[a-zA-Z0-9][a-zA-Z0-9@:.+_-]*$"
+             placeholder="Package name" type="text"
+             v-model="query"/>
     </div>
-    <table class="table table-striped table-bordered table-sm" v-if="data.packagePopularities.length > 0">
+    <table class="table table-striped table-bordered table-sm">
       <thead>
       <tr>
         <th scope="col">Package</th>
@@ -18,7 +14,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr :key="id" v-for="(pkg, id) in data.packagePopularities">
+      <tr :key="id" v-for="(pkg, id) in packagePopularities">
         <td class="text-nowrap">
           <router-link :to="{name: 'package', params: {package: pkg.name}}">{{ pkg.name }}</router-link>
         </td>
@@ -34,13 +30,24 @@
       </tr>
       </tbody>
     </table>
-    <div class="alert alert-warning" role="alert" v-else-if="!error && !loading">No packages found</div>
     <div class="alert alert-danger" role="alert" v-if="error">{{ error }}</div>
+
+    <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler">
+      <div slot="spinner">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+
+      <div class="alert alert-info" role="alert" slot="no-more">{{ packagePopularities.length }} packages found</div>
+
+      <div class="alert alert-warning" role="alert" slot="no-results">No packages found</div>
+    </infinite-loading>
   </div>
 </template>
 
 <script>
-import LoadingSpinner from './LoadingSpinner'
+import InfiniteLoading from 'vue-infinite-loading'
 
 export default {
   name: 'PackageList',
@@ -56,15 +63,15 @@ export default {
     }
   },
   components: {
-    LoadingSpinner
+    InfiniteLoading
   },
   data () {
     return {
-      loading: true,
-      data: { packagePopularities: this.createInitialPackagePopularities() },
-      missedQuery: false,
+      packagePopularities: [],
       query: this.initialQuery,
-      error: ''
+      error: '',
+      offset: 0,
+      infiniteId: +new Date()
     }
   },
   watch: {
@@ -73,43 +80,42 @@ export default {
         this.query = this.query.substring(0, 255)
       }
       this.query = this.query.replace(/(^[^a-zA-Z0-9]|[^a-zA-Z0-9@:.+_-]+)/, '')
-      if (!this.loading) {
-        this.fetchData()
-      } else {
-        this.missedQuery = true
-      }
-    },
-    loading () {
-      if (!this.loading && this.missedQuery) {
-        this.missedQuery = false
-        this.fetchData()
-      }
+
+      this.offset = 0
+      this.fetchData().then(data => {
+        this.offset += this.limit
+        this.packagePopularities = data.packagePopularities
+        this.infiniteId++
+      })
     }
   },
   methods: {
     fetchData () {
       this.loading = true
-      this.apiPackagesService
+      return this.apiPackagesService
         .fetchPackageList({
           query: this.query,
-          limit: this.limit
+          limit: this.limit,
+          offset: this.offset
         })
-        .then(data => { this.data = data })
         .catch(error => { this.error = error })
         .finally(() => { this.loading = false })
     },
-    createInitialPackagePopularities () {
-      return Array.from({ length: this.initialQuery ? 0 : this.limit }, () => ({
-        name: String.fromCharCode(8239),
-        popularity: 0
-      }))
+    infiniteHandler ($state) {
+      this.fetchData()
+        .then(data => {
+          if (data.count > 0) {
+            this.offset += this.limit
+            this.packagePopularities.push(...data.packagePopularities)
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
     }
   },
-  mounted () {
-    this.fetchData()
-  },
   metaInfo () {
-    if (this.data.packagePopularities.length < 1 || this.error) {
+    if (this.packagePopularities.length < 1 || this.error) {
       return { meta: [{ vmid: 'robots', name: 'robots', content: 'noindex' }] }
     }
   }

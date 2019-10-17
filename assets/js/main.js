@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueMeta from 'vue-meta'
 import VueObserveVisibility from 'vue-observe-visibility'
+
 import App from './App'
 import router from './router'
 import createApiPackagesService from './services/ApiPackagesService'

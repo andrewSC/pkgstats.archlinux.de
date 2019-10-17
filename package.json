@@ -42,5 +42,8 @@
     ">= 1%",
     "not IE 11",
     "not OperaMini all"
-  ]
+  ],
+  "dependencies": {
+    "vue-infinite-loading": "^2.4.4"
+  }
 }
