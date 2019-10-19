@@ -25,6 +25,7 @@
     "stylelint-no-unsupported-browser-features": "^3.0.2",
     "swagger-ui": "^3.24.0",
     "vue": "^2.6.10",
+    "vue-infinite-loading": "^2.4.4",
     "vue-loader": "^15.7.1",
     "vue-meta": "^2.3.1",
     "vue-observe-visibility": "^0.4.4",
@@ -42,8 +43,5 @@
     ">= 1%",
     "not IE 11",
     "not OperaMini all"
-  ],
-  "dependencies": {
-    "vue-infinite-loading": "^2.4.4"
-  }
+  ]
 }
